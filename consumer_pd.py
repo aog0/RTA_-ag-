@@ -18,16 +18,13 @@ for msg in consumer:
     event = msg.value
     user_id = event['user_id']
 
-    # Parsowanie daty
     current_time = datetime.fromisoformat(event['timestamp'])
 
     user_time[user_id].append(current_time)
     
-    # 3. Zostawiamy w pamięci tylko te transakcje z ostatnich 60s
     time_prog = current_time - timedelta(seconds=60)
     user_time[user_id] = [t for t in user_time[user_id] if t >= time_prog]
     
-    # 4. Sprawdzamy warunek (WIĘCEJ niż 3 transakcje)
     tx_count = len(user_time[user_id])
     if tx_count > 3:
         print(f"Anomalia; użytkownik: {user_id} | "
